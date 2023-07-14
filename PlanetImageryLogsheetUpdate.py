@@ -58,7 +58,7 @@ def prowl(wd_path, skysat, planet):
 
         return skysat, planet
 
-    except NotADirectoryError or FileNotFoundError:
+    except (FileNotFoundError, NotADirectoryError) as error:
         FNF.append(wd_path)
 
 skysat, planet = prowl(wd_path, skysat, planet)
