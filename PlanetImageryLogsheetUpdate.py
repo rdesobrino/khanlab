@@ -54,14 +54,11 @@ def prowl(wd_path, skysat, planet):
                                 planet[ppath].append(image_id + '\t' + date)
             # continues searching directories, unless not relevant
             elif fname not in ['BlackSky', 'DESIS', 'Landsat', 'Sentinel-2', 'WorldView']:
-                prowl(wd_path+"/" + fname, skysat, planet)
+                prowl(wd_path + "/" + fname, skysat, planet)
 
         return skysat, planet
 
-    except NotADirectoryError:
-        wd_path = wd_path.replace('._', '')
-        prowl(wd_path, skysat, planet)
-    except FileNotFoundError:
+    except NotADirectoryError or FileNotFoundError:
         FNF.append(wd_path)
 
 skysat, planet = prowl(wd_path, skysat, planet)
