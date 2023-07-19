@@ -1,8 +1,7 @@
 # This script was written to archive imagery data from CryoShare into
 # the format used in the Khan lab's archive spreadsheets
 
-# written by Rachel de Sobrino (desob003@umn.edu), last edited 2023/07/14
-# modified from Planet Downloads Organizer written by Colby Rand 2023/06/29
+# written by Rachel de Sobrino (desob003@umn.edu), last edited 2023/07/19
 
 import os
 from tkinter import filedialog as fd
@@ -29,8 +28,10 @@ def prowl(wd_path, skysat, planet):
     try:
         for fname in os.listdir(wd_path):
             f = os.path.join(wd_path, fname)
-            f = f.replace('._', '')  # removes hidden mac pathnames
-            if os.path.isfile(f):
+
+            # ignore hidden mac files
+            if os.path.isfile(f) and '._' not in f:
+
                 # ingests metadata of PlanetExplorer files
                 if fname.endswith('metadata.json') and ('SkySat' in f or 'PlanetScope' in f):
                     with open(f, 'r') as _json:
@@ -52,8 +53,9 @@ def prowl(wd_path, skysat, planet):
                                 planet[ppath] = [image_id + '\t' + date]
                             else:
                                 planet[ppath].append(image_id + '\t' + date)
+
             # continues searching directories, unless not relevant
-            elif fname not in ['BlackSky', 'DESIS', 'Landsat', 'Sentinel-2', 'WorldView']:
+            elif fname not in ['BlackSky', 'DESIS', 'Landsat', 'Sentinel-2', 'WorldView', 'Worldview']:
                 prowl(wd_path + "/" + fname, skysat, planet)
 
         return skysat, planet
@@ -61,20 +63,30 @@ def prowl(wd_path, skysat, planet):
     except (FileNotFoundError, NotADirectoryError) as error:
         FNF.append(wd_path)
 
+
 skysat, planet = prowl(wd_path, skysat, planet)
 
 # printed content is tab-delimited and can be copy and pasted into google sheet archive
-
-print('SkySat')
+print('\nSkySat\n')
 for region in skysat:
     print(region)
     for img in skysat[region]:
         print(img)
 
-print('Planet')
+print('\nPlanet\n')
 for region in planet:
     print(region)
     for img in planet[region]:
         print(img)
 
-
+# error summaries
+print('\n', len(FNF), 'Total Errors\n')
+wv = 0
+ds = 0
+for error in FNF:
+    if 'WV' in error:
+        wv += 1
+    elif '._' in error:
+        ds += 1
+print(wv, ' errors from worldview files')
+print(ds, ' errors from ._ files')
