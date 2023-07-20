@@ -46,12 +46,12 @@ def prowl(wd_path, skysat, planet):
                         if text['properties']['item_type'] == 'SkySatCollect':  # add skysat imagery to dictionary
                             if skypath not in skysat:  # creates dictionary key for region if does not exist
                                 skysat[skypath] = [image_id + '\t' + date]
-                            else:
+                            elif image_id + '\t' + date not in skysat[skypath]:
                                 skysat[skypath].append(image_id + '\t' + date)
                         elif 'PS' in text['properties']['item_type']:  # add planet imagery to dictionary
                             if ppath not in planet:  # creates dictionary key for region if does not exist
                                 planet[ppath] = [image_id + '\t' + date]
-                            else:
+                            elif image_id + '\t' + date not in planet[ppath]:
                                 planet[ppath].append(image_id + '\t' + date)
 
             # continues searching directories, unless not relevant
