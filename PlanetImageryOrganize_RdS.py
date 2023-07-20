@@ -10,7 +10,7 @@
 # It *should* work on any organization of files, whether it's newly downloaded from Planet
 # Explorer or already in some organizational schemata on cryoshare
 
-# TODO: handle PSScene files
+# TODO if you want: handle PSScene files
 
 # python PlanetImageryOrganize_RdS.py
 
@@ -38,14 +38,18 @@ def nest(wd_path):
             y = fname[0:4]
             d = y + '_' + fname[4:6] + '_' + fname[6:8]
 
-            # identify satellite type for filepaths
+            # identify satellite type for filepaths and store filepath up to satellite type
             if 'SkySat' in f:
                 sat = 'SkySat'
-            elif 'PlanetScope' in f or 'PSScene' in f:
+                rootdir = f[:f.find(sat)]
+            # PLanet is handled differently based on if downloaded from PlanetExplorer or re-org on cryoshare
+            elif 'PlanetScope' in f:
+                sat = 'PlanetScope'
+                rootdir = f[:f.find(sat)]
+            elif 'PSScene' in f:
+                rootdir = f[:f.find('PSScene')]
                 sat = 'PlanetScope'
 
-            # filepath preceding satellite type
-            rootdir = f[:f.find(sat)]
             # extracts image id from filepath
             id = image_id(fname, sat)
 
